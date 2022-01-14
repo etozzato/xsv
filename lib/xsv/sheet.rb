@@ -40,14 +40,14 @@ module Xsv
       @headers = []
       @mode = :array
       @row_skip = 0
-      @hidden = ids[:state] == "hidden"
+      @hidden = ids[:state] == 'hidden'
 
       @last_row, @column_count = SheetBoundsHandler.get_bounds(@io, @workbook)
     end
 
     # @return [String]
     def inspect
-      "#<#{self.class.name}:#{object_id}>"
+      "#<#{self.class.name}:#{object_id}/#{rows}:#{name}>"
     end
 
     # Returns true if the worksheet is hidden
@@ -66,7 +66,12 @@ module Xsv
       true
     end
 
-    alias_method :each, :each_row
+    alias each each_row
+
+    # @return [Number] The number of rows in the sheet, calculated to the last non empty row
+    def rows
+      @last_row - @row_skip - 1
+    end
 
     # Get row by number, starting at 0. Returns either a hash or an array based on the current row.
     # If the specified index is out of bounds an empty row is returned.
